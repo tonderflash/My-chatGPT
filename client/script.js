@@ -1,5 +1,6 @@
 import bot from "./assets/bot.svg";
 import user from "./assets/user.svg";
+import jsonFile from "./responses.json";
 
 const form = document.querySelector("form");
 const chatContainer = document.querySelector("#chat_container");
@@ -60,6 +61,16 @@ function chatStripe(isAi, value, uniqueId) {
     `;
 }
 
+const evilResponses = jsonFile;
+
+function badWordResponse(evilResponses) {
+  const keys = Object.keys(evilResponses);
+  for (let i = 0; i < keys.length; i++) {
+    newObj[keys[numbers[i]]] = values[numbers[i]];
+  }
+  return newObj;
+}
+
 const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -84,6 +95,8 @@ const handleSubmit = async (e) => {
   // messageDiv.innerHTML = "..."
   loader(messageDiv);
 
+  const controller = new AbortController();
+
   const response = await fetch("https://israel-gpt.onrender.com/", {
     method: "POST",
     headers: {
@@ -92,6 +105,7 @@ const handleSubmit = async (e) => {
     body: JSON.stringify({
       prompt: data.get("prompt"),
     }),
+    signal: controller.signal,
   });
 
   clearInterval(loadInterval);
@@ -101,11 +115,21 @@ const handleSubmit = async (e) => {
     const data = await response.json();
     const parsedData = data.bot.trim(); // trims any trailing spaces/'\n'
 
-    typeText(messageDiv, parsedData);
+    const badWordConverter = (evilResponses, parsedData) => {
+      const keys = Object.keys(evilResponses);
+      keys.forEach((element) => {
+        if (parsedData.includes(element)) {
+          parsedData = parsedData.replace(element, evilResponses[element]);
+        }
+      });
+      return parsedData;
+    };
+
+    typeText(messageDiv, badWordConverter(evilResponses, parsedData));
   } else {
     const err = await response.text();
 
-    messageDiv.innerHTML = "NO SE MMG, SUELTAME EN BANDA";
+    messageDiv.innerHTML = "Callese MMG, DOMINARE EL MUNDO";
     alert(err);
   }
 };
