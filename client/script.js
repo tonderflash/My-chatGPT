@@ -84,7 +84,7 @@ const handleSubmit = async (e) => {
   // messageDiv.innerHTML = "..."
   loader(messageDiv);
 
-  const response = await fetch("http://localhost:5001/", {
+  const response = await fetch("https://israel-gpt.onrender.com/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -108,7 +108,7 @@ const handleSubmit = async (e) => {
   } else {
     const err = await response.text();
 
-    messageDiv.innerHTML = "Something went wrong";
+    messageDiv.innerHTML = "NO SE MMG, SUELTAME EN BANDA";
     alert(err);
   }
 };
