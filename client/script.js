@@ -97,9 +97,6 @@ const handleSubmit = async (e) => {
   clearInterval(loadInterval);
   messageDiv.innerHTML = " ";
 
-  const dataRep = await response.json();
-  console.log(dataRep);
-
   if (response.ok) {
     const data = await response.json();
     const parsedData = data.bot.trim(); // trims any trailing spaces/'\n'
